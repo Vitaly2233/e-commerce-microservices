@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { plainToInstance } from "class-transformer";
-import { IsNumber, IsString, validateSync } from "class-validator";
+import { IsNumber, validateSync } from "class-validator";
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -8,9 +8,6 @@ dotenv.config();
 class EnvConfig {
   @IsNumber()
   SERVER_PORT!: number;
-
-  @IsString()
-  TOKEN_SECRET!: string;
 }
 
 const envConfig = plainToInstance(EnvConfig, process.env, {
@@ -29,5 +26,4 @@ if (errors.length > 0) {
 
 export const CONFIG = {
   SERVER_PORT: envConfig.SERVER_PORT,
-  TOKEN_SECRET: envConfig.TOKEN_SECRET,
 };

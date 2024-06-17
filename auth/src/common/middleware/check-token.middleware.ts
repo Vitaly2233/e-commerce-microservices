@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { JsonWebTokenError } from "jsonwebtoken";
 import { CONFIG } from "../config";
 import { SafeUserResponse } from "../../user-service/dto/safe-user-response.dto";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
+import { HttpException } from "../exceptions/http-exception";
 
 export function checkTokenMiddleware(
   req: Request,
@@ -11,7 +12,7 @@ export function checkTokenMiddleware(
   next: NextFunction
 ) {
   const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "No token provided" });
+  if (!token) return next(new HttpException(401, "No token provided"));
 
   jwt.verify(token, CONFIG.TOKEN_SECRET, async (err, decoded) => {
     try {
@@ -29,8 +30,10 @@ export function checkTokenMiddleware(
       req.user = safeUser;
       next();
     } catch (error) {
-      console.log(error);
-      return res.status(403).json({ message: "Failed to authenticate token" });
+      if (error instanceof JsonWebTokenError) {
+        return next(new HttpException(401, error.message));
+      }
+      return next(new HttpException(403, "Failed to authenticate token"));
     }
   });
 }
