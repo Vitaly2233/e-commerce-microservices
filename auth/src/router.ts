@@ -20,9 +20,7 @@ export const setupRoutes = (app: Express) => {
       const body = req.body as ValidateTokenDto;
       const result = await authService.validateToken(body.token);
 
-      res.send(
-        FormatResponse(ValidateTokenResponseDto, { validationResult: result })
-      );
+      res.send(FormatResponse(ValidateTokenResponseDto, { safeUser: result }));
     })
   );
 
