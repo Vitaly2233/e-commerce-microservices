@@ -6,8 +6,6 @@ import { FormatResponse } from "./common/utils/format-response";
 import {
   DeleteUserParamsDto,
   FindOneUserParamsDto,
-  LoginUserDto,
-  LoginUserResponseDto,
   RegisterUserDto,
   UpdateUserDto,
   UpdateUserParamsDto,
@@ -33,18 +31,6 @@ export const setupRoutes = (app: Express) => {
 
       res.statusCode = 201;
       res.send();
-    })
-  );
-
-  app.post(
-    "/user/login",
-    bodyValidationMiddleware(LoginUserDto),
-    asyncHandler(async (req: Request, res: Response) => {
-      const dto = req.body as LoginUserDto;
-
-      const result = await userService.loginUser(dto);
-
-      res.send(FormatResponse(LoginUserResponseDto, result));
     })
   );
 
