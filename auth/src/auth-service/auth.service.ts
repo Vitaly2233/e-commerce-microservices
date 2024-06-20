@@ -1,18 +1,18 @@
 import bcrypt from "bcrypt";
 import jwt, { JsonWebTokenError } from "jsonwebtoken";
 import { plainToInstance } from "class-transformer";
-import { Db } from "../db";
 import { HttpException } from "../common/exceptions/http-exception";
 import { CONFIG } from "../common/config";
 import { SafeUserResponse } from "./dtos/safe-user-response.dto";
 import { validate } from "class-validator";
 import { LoginUserResponseDto } from "./dtos/login-user-response.dto";
+import { UserService } from "../external-services/user/user.service";
 
 export class AuthService {
-  db: Db;
+  userService: UserService;
 
-  constructor(db: Db) {
-    this.db = db;
+  constructor(userService: UserService) {
+    this.userService = userService;
   }
 
   async validateToken(token: string) {
@@ -26,7 +26,7 @@ export class AuthService {
         throw new Error(errors.map((err) => err.toString()).join(","));
       }
 
-      const user = await this.db.findById(safeUser.id);
+      const user = await this.userService.findById(safeUser.id);
       if (!user) throw new Error("user not found");
 
       return safeUser;
@@ -44,7 +44,8 @@ export class AuthService {
     password: string
   ): Promise<LoginUserResponseDto> {
     try {
-      const user = await this.db.findOne({ email });
+      //TODO FIX THIS
+      const user = await this.userService.findOne({ email });
 
       const passwordMatch = await bcrypt.compare(password, user.password);
 
@@ -62,11 +63,12 @@ export class AuthService {
         }
       );
 
-      await this.db.updateUser(safeUser.id, { token });
+      await this.userService.updateOne(safeUser.id, { token });
 
       return { token };
     } catch (error) {
       console.log(error);
+
       throw new HttpException(401, "Authentication failed");
     }
   }

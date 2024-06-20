@@ -1,5 +1,4 @@
 import { Express, Request, Response } from "express";
-import { Db } from "./db";
 import { asyncHandler } from "./common/utils/async-handler";
 import { FormatResponse } from "./common/utils/format-response";
 import { bodyValidationMiddleware } from "./common/middleware";
@@ -8,10 +7,11 @@ import { ValidateTokenDto } from "./auth-service/dtos/validate-token.dto";
 import { ValidateTokenResponseDto } from "./auth-service/dtos/validate-token-response.dto";
 import { LoginUserDto } from "./auth-service/dtos/login-user.dto";
 import { LoginUserResponseDto } from "./auth-service/dtos/login-user-response.dto";
+import { UserService } from "./external-services/user/user.service";
 
 export const setupRoutes = (app: Express) => {
-  const db = new Db();
-  const authService = new AuthService(db);
+  const userService = new UserService();
+  const authService = new AuthService(userService);
 
   app.post(
     "/verify-token",

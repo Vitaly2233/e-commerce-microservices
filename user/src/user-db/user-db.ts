@@ -28,9 +28,9 @@ export class UserDb {
     });
   }
 
-  async findById(id: number): Promise<IUser> {
+  async findById(id?: number, email?: string): Promise<IUser> {
     try {
-      return await this.usersClient.findFirstOrThrow({ where: { id } });
+      return await this.usersClient.findFirstOrThrow({ where: { id, email } });
     } catch (error) {
       console.log(error);
       this.handleDbError(error);

@@ -14,6 +14,9 @@ class EnvConfig {
 
   @IsNumber()
   SERVER_PORT!: number;
+
+  @IsString()
+  INTERNAL_SERVICE_TOKEN_SECRET!: string;
 }
 
 const envConfig = plainToInstance(EnvConfig, process.env, {
@@ -31,6 +34,7 @@ if (errors.length > 0) {
 }
 
 export const CONFIG: EnvConfig = {
+  INTERNAL_SERVICE_TOKEN_SECRET: envConfig.INTERNAL_SERVICE_TOKEN_SECRET,
   TOKEN_SECRET: envConfig.TOKEN_SECRET,
   AUTH_SERVICE_BASE_URL: envConfig.AUTH_SERVICE_BASE_URL,
   SERVER_PORT: envConfig.SERVER_PORT,

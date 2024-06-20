@@ -6,6 +6,7 @@ import { FormatResponse } from "./common/utils/format-response";
 import {
   DeleteUserParamsDto,
   FindOneUserParamsDto,
+  GetUserQueryDto,
   RegisterUserDto,
   UpdateUserDto,
   UpdateUserParamsDto,
@@ -16,6 +17,8 @@ import {
   checkTokenMiddleware,
   paramsValidationMiddleware,
 } from "./common/middleware";
+import { queryValidationMiddleware } from "./common/middleware/query-validation.middleware";
+import { UnsafeUserResponseDto } from "./user-service/dto/unsafe-user-response.dto";
 
 export const setupRoutes = (app: Express) => {
   const userDb = new UserDb();
@@ -35,6 +38,19 @@ export const setupRoutes = (app: Express) => {
   );
 
   app.get(
+    "user/unsafe",
+    checkTokenMiddleware,
+    queryValidationMiddleware(GetUserQueryDto),
+    asyncHandler(async (req: Request, res: Response) => {
+      const query = req.query as any as GetUserQueryDto;
+
+      const result = await userService.findOne(undefined, query.email);
+
+      res.send(FormatResponse(UnsafeUserResponseDto, result));
+    })
+  );
+
+  app.get(
     "/user/me",
     checkTokenMiddleware,
     asyncHandler(async (req: Request, res: Response) => {
@@ -48,7 +64,7 @@ export const setupRoutes = (app: Express) => {
   app.get(
     "/user/:id",
     checkTokenMiddleware,
-    paramsValidationMiddleware(UpdateUserParamsDto),
+    paramsValidationMiddleware(FindOneUserParamsDto),
     asyncHandler(async (req: Request, res: Response) => {
       const params = req.params as any as FindOneUserParamsDto;
 
@@ -59,9 +75,11 @@ export const setupRoutes = (app: Express) => {
   );
 
   app.get(
-    "/user",
+    "/users",
     checkTokenMiddleware,
+    queryValidationMiddleware(GetUserQueryDto),
     asyncHandler(async (req: Request, res: Response) => {
+      const query = req.query as any as GetUserQueryDto;
       const result = await userService.findAllUsers();
 
       res.send(FormatResponse(UserResponseDto, result));

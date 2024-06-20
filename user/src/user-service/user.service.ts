@@ -20,8 +20,8 @@ export class UserService {
     }
   }
 
-  async findOne(id: number) {
-    return this.db.findById(id);
+  async findOne(id?: number, email?: string) {
+    return this.db.findById(id, email);
   }
 
   findAllUsers() {
