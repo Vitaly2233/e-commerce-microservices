@@ -14,7 +14,7 @@ export const setupRoutes = (app: Express) => {
   const authService = new AuthService(userService);
 
   app.post(
-    "/verify-token",
+    "/validate-token",
     bodyValidationMiddleware(ValidateTokenDto),
     asyncHandler(async (req: Request, res: Response) => {
       const body = req.body as ValidateTokenDto;

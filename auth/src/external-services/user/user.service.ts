@@ -1,8 +1,7 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import { CONFIG } from "../../common/config";
-import { UserResponseDto } from "./dtos/user-response.dto";
 import { FindOneUserParamsDto } from "./dtos/find-one-user-params.dto";
-import { UpdateUserDto } from "../../auth-service/dtos/update-user.dto";
+import { UserResponse } from "./types/user-response.type";
 
 export class UserService {
   private api: AxiosInstance;
@@ -16,13 +15,7 @@ export class UserService {
     });
   }
 
-  async findById(id: number): Promise<UserResponseDto> {
-    const result = await this.api.get(`user/${id}`);
-
-    return result.data;
-  }
-
-  async findOne(params: FindOneUserParamsDto) {
+  async findOne(params: FindOneUserParamsDto): Promise<UserResponse> {
     try {
       const result = await this.api.get(`user/unsafe`, {
         params,
@@ -34,15 +27,10 @@ export class UserService {
       return result.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.log(error.message);
+        console.log(error?.message);
+        console.log(error?.response?.data);
       }
       throw new Error("Not found");
     }
-  }
-
-  async updateOne(id: number | string, data: UpdateUserDto) {
-    const result = await this.api.patch(`user/${id}`, data);
-
-    return result.data;
   }
 }

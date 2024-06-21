@@ -3,7 +3,7 @@ import jwt, { JsonWebTokenError } from "jsonwebtoken";
 import { plainToInstance } from "class-transformer";
 import { HttpException } from "../common/exceptions/http-exception";
 import { CONFIG } from "../common/config";
-import { SafeUserResponse } from "./dtos/safe-user-response.dto";
+import { SafeUserResponseDto } from "./dtos/safe-user-response.dto";
 import { validate } from "class-validator";
 import { LoginUserResponseDto } from "./dtos/login-user-response.dto";
 import { UserService } from "../external-services/user/user.service";
@@ -20,13 +20,13 @@ export class AuthService {
       const decoded = jwt.verify(token, CONFIG.TOKEN_SECRET);
       if (!decoded) throw new Error("Decoded data not found");
 
-      const safeUser = plainToInstance(SafeUserResponse, decoded);
+      const safeUser = plainToInstance(SafeUserResponseDto, decoded);
       const errors = await validate(safeUser, { whitelist: true });
       if (errors.length > 0) {
         throw new Error(errors.map((err) => err.toString()).join(","));
       }
 
-      const user = await this.userService.findById(safeUser.id);
+      const user = await this.userService.findOne({ email: safeUser.email });
       if (!user) throw new Error("user not found");
 
       return safeUser;
@@ -44,14 +44,13 @@ export class AuthService {
     password: string
   ): Promise<LoginUserResponseDto> {
     try {
-      //TODO FIX THIS
       const user = await this.userService.findOne({ email });
 
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (!passwordMatch) throw new Error("Password doesn't match");
 
-      const safeUser = plainToInstance(SafeUserResponse, user, {
+      const safeUser = plainToInstance(SafeUserResponseDto, user, {
         excludeExtraneousValues: true,
       });
 
@@ -62,8 +61,6 @@ export class AuthService {
           expiresIn: "1d",
         }
       );
-
-      await this.userService.updateOne(safeUser.id, { token });
 
       return { token };
     } catch (error) {

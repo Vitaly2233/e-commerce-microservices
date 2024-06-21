@@ -14,7 +14,7 @@ export async function checkTokenMiddleware(
   if (token === CONFIG.INTERNAL_SERVICE_TOKEN_SECRET) return next();
 
   try {
-    const result = await authService.verifyToken(token);
+    const result = await authService.validateToken(token);
     if (!result.safeUser) {
       return new HttpException(403, "Failed to authenticate token");
     }

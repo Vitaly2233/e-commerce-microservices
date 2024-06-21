@@ -5,9 +5,9 @@ import { asyncHandler } from "./common/utils/async-handler";
 import { FormatResponse } from "./common/utils/format-response";
 import {
   DeleteUserParamsDto,
-  FindOneUserParamsDto,
   GetUserQueryDto,
   RegisterUserDto,
+  UnsafeUserResponseDto,
   UpdateUserDto,
   UpdateUserParamsDto,
   UserResponseDto,
@@ -15,10 +15,10 @@ import {
 import {
   bodyValidationMiddleware,
   checkTokenMiddleware,
+  internalOnlyMiddleware,
   paramsValidationMiddleware,
 } from "./common/middleware";
 import { queryValidationMiddleware } from "./common/middleware/query-validation.middleware";
-import { UnsafeUserResponseDto } from "./user-service/dto/unsafe-user-response.dto";
 
 export const setupRoutes = (app: Express) => {
   const userDb = new UserDb();
@@ -38,8 +38,8 @@ export const setupRoutes = (app: Express) => {
   );
 
   app.get(
-    "user/unsafe",
-    checkTokenMiddleware,
+    "/user/unsafe",
+    internalOnlyMiddleware,
     queryValidationMiddleware(GetUserQueryDto),
     asyncHandler(async (req: Request, res: Response) => {
       const query = req.query as any as GetUserQueryDto;
@@ -62,24 +62,9 @@ export const setupRoutes = (app: Express) => {
   );
 
   app.get(
-    "/user/:id",
-    checkTokenMiddleware,
-    paramsValidationMiddleware(FindOneUserParamsDto),
-    asyncHandler(async (req: Request, res: Response) => {
-      const params = req.params as any as FindOneUserParamsDto;
-
-      const result = await userService.findOne(params.id);
-
-      res.send(FormatResponse(UserResponseDto, result));
-    })
-  );
-
-  app.get(
     "/users",
     checkTokenMiddleware,
-    queryValidationMiddleware(GetUserQueryDto),
     asyncHandler(async (req: Request, res: Response) => {
-      const query = req.query as any as GetUserQueryDto;
       const result = await userService.findAllUsers();
 
       res.send(FormatResponse(UserResponseDto, result));

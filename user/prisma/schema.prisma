@@ -8,9 +8,8 @@ datasource db {
 }
 
 model users {
-  id       Int     @id(map: "PK_Users") @default(autoincrement())
+  id       Int    @id(map: "PK_Users") @default(autoincrement())
   password String
-  token    String?
-  username String  @db.VarChar(100)
-  email    String  @unique(map: "IX_Users_Email")
+  username String @db.VarChar(100)
+  email    String @unique(map: "IX_Users_Email")
 }

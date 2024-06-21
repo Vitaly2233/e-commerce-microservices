@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosError, AxiosInstance } from "axios";
 import { CONFIG } from "../../common/config";
 import { ValidateTokenDto } from "./dtos/validate-token.dto";
 import { ValidateTokenResponseDto } from "./dtos/validate-token-response.dto";
@@ -12,15 +12,18 @@ class AuthService {
     });
   }
 
-  async verifyToken(token: string): Promise<ValidateTokenResponseDto> {
+  async validateToken(token: string): Promise<ValidateTokenResponseDto> {
     try {
       const body: ValidateTokenDto = { token };
-      const res = await this.api.post("verify-token", body);
+      const res = await this.api.post("validate-token", body);
 
       return res.data;
     } catch (error) {
-      console.log("🚀 ~ AuthService ~ verifyToken ~ error:", error);
-      throw new Error("invalid token");
+      if (error instanceof AxiosError) {
+        console.log(error?.message);
+        console.log(error?.response?.data);
+      }
+      throw new Error("Not found");
     }
   }
 }
