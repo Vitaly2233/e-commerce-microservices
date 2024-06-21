@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import { CONFIG } from "../../common/config";
 import { FindOneUserParamsDto } from "./dtos/find-one-user-params.dto";
-import { UserResponse } from "./types/user-response.type";
+import { UnsafeUserResponse } from "./types/unsafe-user-response.type";
 
 export class UserService {
   private api: AxiosInstance;
@@ -15,7 +15,7 @@ export class UserService {
     });
   }
 
-  async findOne(params: FindOneUserParamsDto): Promise<UserResponse> {
+  async findOne(params: FindOneUserParamsDto): Promise<UnsafeUserResponse> {
     try {
       const result = await this.api.get(`user/unsafe`, {
         params,
