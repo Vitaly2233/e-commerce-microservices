@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import { CONFIG } from "../../common/config";
-import { ValidateTokenDto } from "./dtos/validate-token.dto";
-import { ValidateTokenResponseDto } from "./dtos/validate-token-response.dto";
+import { ValidateTokenBody } from "./types/validate-token-body";
+import { ValidateTokenResponse } from "./types/validate-token-response";
 
 class AuthService {
   private api: AxiosInstance;
@@ -12,9 +12,9 @@ class AuthService {
     });
   }
 
-  async validateToken(token: string): Promise<ValidateTokenResponseDto> {
+  async validateToken(token: string): Promise<ValidateTokenResponse> {
     try {
-      const body: ValidateTokenDto = { token };
+      const body: ValidateTokenBody = { token };
       const res = await this.api.post("validate-token", body);
 
       return res.data;

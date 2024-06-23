@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
 import jwt, { JsonWebTokenError } from "jsonwebtoken";
 import { plainToInstance } from "class-transformer";
+import { validate } from "class-validator";
 import { HttpException } from "../common/exceptions/http-exception";
 import { CONFIG } from "../common/config";
 import { SafeUserResponseDto } from "./dtos/safe-user-response.dto";
-import { validate } from "class-validator";
 import { LoginUserResponseDto } from "./dtos/login-user-response.dto";
 import { UserService } from "../external-services/user/user.service";
 
