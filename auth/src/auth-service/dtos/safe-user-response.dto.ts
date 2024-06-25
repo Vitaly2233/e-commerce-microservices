@@ -1,8 +1,8 @@
 import { Expose } from "class-transformer";
-import { ISafeUserResponse } from "../../common/interfaces/safe-user-response.interface";
+import { SafeUserResponse } from "../../common/types/safe-user-response.type";
 import { IsEmail, IsNumber, IsString } from "class-validator";
 
-export class SafeUserResponseDto implements ISafeUserResponse {
+export class SafeUserResponseDto implements SafeUserResponse {
   @Expose()
   @IsNumber()
   id!: number;

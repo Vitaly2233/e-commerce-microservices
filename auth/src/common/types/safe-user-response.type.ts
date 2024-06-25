@@ -1,4 +1,4 @@
-export interface ISafeUserResponse {
+export interface SafeUserResponse {
   id: number;
 
   username?: string;

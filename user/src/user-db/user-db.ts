@@ -8,7 +8,7 @@ export class UserDb {
   usersClient;
 
   constructor() {
-    this.usersClient = getDbClient().users;
+    this.usersClient = getDbClient().user;
   }
 
   handleDbError(error: unknown) {
@@ -17,7 +17,7 @@ export class UserDb {
         const properties = (error.meta.target as string[]).join(", ");
         throw new HttpException(409, `${properties} should be unique`);
       }
-      if (error.code === "P2025")
+      if (error.code === "P2025" || error.code === "P2021")
         throw new HttpException(404, `User not found`);
     }
   }
