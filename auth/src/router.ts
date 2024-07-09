@@ -8,10 +8,12 @@ import { ValidateTokenResponseDto } from "./auth-service/dtos/validate-token-res
 import { LoginUserDto } from "./auth-service/dtos/login-user.dto";
 import { LoginUserResponseDto } from "./auth-service/dtos/login-user-response.dto";
 import { UserService } from "./external-services/user/user.service";
+import { JwtService } from './jwt-service/jwt-service'
 
 export const setupRoutes = (app: Express) => {
   const userService = new UserService();
-  const authService = new AuthService(userService);
+  const jwtService = new JwtService();
+  const authService = new AuthService(userService, jwtService);
 
   app.post(
     "/validate-token",
@@ -25,7 +27,7 @@ export const setupRoutes = (app: Express) => {
   );
 
   app.post(
-    "/login-user",
+    "/login",
     bodyValidationMiddleware(LoginUserDto),
     asyncHandler(async (req: Request, res: Response) => {
       const body = req.body as LoginUserDto;

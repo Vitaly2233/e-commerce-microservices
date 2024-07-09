@@ -1,48 +1,33 @@
-import bcrypt from "bcrypt";
-import { UserDb } from "../user-db/user-db";
-import { RegisterUserDto } from "./dto/register-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
+import bcrypt from 'bcrypt'
+import { UserDb } from '../user-db/user-db'
+import { RegisterUserDto, UpdateUserDto } from './dto'
+import { IUser } from '../user-db/interfaces/user.interface'
 
 export class UserService {
-  db: UserDb;
+  db: UserDb
 
   constructor(userDb: UserDb) {
-    this.db = userDb;
+    this.db = userDb
   }
 
-  async registerUser(dto: RegisterUserDto) {
-    try {
-      dto.password = await bcrypt.hash(dto.password, 10);
-      await this.db.createUser(dto);
-    } catch (error) {
-      console.log(error);
-      this.db.handleDbError(error);
-    }
+  async registerUser(dto: RegisterUserDto): Promise<void> {
+    dto.password = await bcrypt.hash(dto.password, 10)
+    await this.db.createUser(dto)
   }
 
-  findOne(id?: number, email?: string) {
-    return this.db.findById(id, email);
+  findOne(id?: number, email?: string): Promise<IUser> {
+    return this.db.findById(id, email)
   }
 
-  findAllUsers() {
-    return this.db.findAllUsers();
+  findAllUsers(): Promise<IUser[]> {
+    return this.db.findAllUsers()
   }
 
   async updateUser(id: number, dto: UpdateUserDto): Promise<void> {
-    try {
-      await this.db.updateUser(id, dto);
-    } catch (error) {
-      console.log(error);
-      this.db.handleDbError(error);
-    }
+    await this.db.updateUser(id, dto)
   }
 
   async deleteUser(id: number): Promise<void> {
-    try {
-      await this.db.deleteUser(id);
-    } catch (error) {
-      console.log(error);
-      this.db.handleDbError(error);
-    }
+    await this.db.deleteUser(id)
   }
 }
