@@ -9,11 +9,13 @@ import { LoginUserDto } from "./auth-service/dtos/login-user.dto";
 import { LoginUserResponseDto } from "./auth-service/dtos/login-user-response.dto";
 import { UserService } from "./external-services/user/user.service";
 import { JwtService } from './jwt-service/jwt-service'
+import {PasswordService} from "./password-service/password-service";
 
 export const setupRoutes = (app: Express) => {
   const userService = new UserService();
   const jwtService = new JwtService();
-  const authService = new AuthService(userService, jwtService);
+  const passwordService = new PasswordService();
+  const authService = new AuthService(userService, jwtService, passwordService);
 
   app.post(
     "/validate-token",
