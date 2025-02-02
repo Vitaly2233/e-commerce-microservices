@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "typeRoots": [
+      "./types"
+    ],
+    "noUnusedLocals": true,
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./src/external-services"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

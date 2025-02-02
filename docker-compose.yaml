@@ -1,17 +1,18 @@
 version: "3"
 
 services:
-  common-db:
+  e-commerce-db:
     container_name: e-commerce-db
     image: postgres:15
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: TFMwh3PUaGZQUsYjSkqxb2o99nBw6
       PGDATA: /var/lib/postgresql/data
+      POSTGRES_DB: ECommerceDB
     volumes:
-      - e-commerce-db:/var/lib/postgresql/data/
+      - e-commerce:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
 
 volumes:
-  e-commerce-db:
+  e-commerce:
