@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { HttpException } from '../exceptions/http-exception'
 
-export function errorHandlerMiddleware(err: any, req: Request, res: Response, _next: NextFunction) {
+export function errorHandlerMiddleware(err: any, _: Request, res: Response, _next: NextFunction) {
   if (err instanceof HttpException) {
     res.status(err.status).json({ message: err.message })
   } else {
